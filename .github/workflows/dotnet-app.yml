@@ -1,0 +1,40 @@
+name: Deploy latest PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install Ngrok
+      run: |
+        wget "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+        unzip -qq ngrok-stable-linux-amd64.zip
+        ./ngrok authtoken ${{ secrets.ngrok_authtoken }}
+    - name: Build PDF file
+      run: |
+        chmod +x build/build.sh
+        sh build/build.sh
+    - name: Publish to Release page
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Latest build"
+        files: |
+          *.pdf
