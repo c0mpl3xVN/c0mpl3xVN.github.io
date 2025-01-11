@@ -11,7 +11,7 @@ app="./build/app/HtmlToPdf"
 # Getting stuff
 echo "Intializing..."
 sh -c "python -m http.server 8000" & echo "Running HTTP Server"
-sh -c "./ngrok http 8000" & echo "Running Ngrok"
+sh -c "ngrok http 8000" & echo "Running Ngrok"
 echo "Waiting for 5 seconds." && sleep 5
 echo "\nUp and running!\n"
 echo "Building HtmlToPdf..."
